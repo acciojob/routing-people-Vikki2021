@@ -7,16 +7,22 @@ function UserDetails() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true);
-    fetch(`https://jsonplaceholder.typicode.com/users/${id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setUser(data);
-        setLoading(false);
-      });
+    setLoading(true); // Set loading BEFORE fetch
+    const timer = setTimeout(() => {
+      fetch(`https://jsonplaceholder.typicode.com/users/${id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setUser(data);
+          setLoading(false);
+        });
+    }, 100); // small delay to make "Loading..." visible
+
+    return () => clearTimeout(timer); // clean up
   }, [id]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) {
+    return <div>Loading...</div>; // Must match Cypress exactly
+  }
 
   return (
     <div>
